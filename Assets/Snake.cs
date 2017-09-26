@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class Snake : MonoBehaviour {
@@ -9,9 +10,10 @@ public class Snake : MonoBehaviour {
 	public float speed;
 	//Default moves up
 	Vector2 dir = Vector2.up;
-
 	bool ate = false;
-	bool lose = false;
+	public static bool lose = false;
+	public Text scoreText;
+	private int score = 0;
 
 	// Keep track of tail
 	List<Transform> tail = new List<Transform>();
@@ -19,7 +21,7 @@ public class Snake : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// Move Snake every 300ms
-		InvokeRepeating("Move", speed, speed);
+		InvokeRepeating("Move", speed/2, speed);
 	}
 	
 	// Update is called once per frame
@@ -30,9 +32,10 @@ public class Snake : MonoBehaviour {
 			dir = Vector2.right;
 		else if (Input.GetKey (KeyCode.LeftArrow)  && dir != Vector2.right)
 			dir = Vector2.left;
-		else if (Input.GetKey (KeyCode.UpArrow)  && dir != Vector2.down)
+		else if (Input.GetKey (KeyCode.UpArrow)  && dir != Vector2.down )
 			dir = Vector2.up;
-
+		
+		scoreText.text = score.ToString ();
 	}
 
 	void Move(){
@@ -47,6 +50,7 @@ public class Snake : MonoBehaviour {
 			transform.position = reset;
 			lose = false;
 			dir = Vector2.up;
+			Time.timeScale = 0;
 		}
 		// Increase tail
 		if (ate) {
@@ -71,7 +75,7 @@ public class Snake : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D coll) {
 		if (coll.name.StartsWith ("FoodPrefab")) {
 			ate = true;
-
+			score += 10;
 			Destroy (coll.gameObject);
 		} else {
 		// Game Over
@@ -80,6 +84,7 @@ public class Snake : MonoBehaviour {
 			foreach (GameObject item in GameObject.FindGameObjectsWithTag("tail")) {
 				Destroy (item);
 			}
+			score = 0;
 		}
 	}
 }

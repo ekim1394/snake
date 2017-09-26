@@ -19,15 +19,24 @@ public class SpawnFood : MonoBehaviour {
 		int x = (int)Random.Range (wallLeft.position.x, wallRight.position.x);
 		int y = (int)Random.Range (wallTop.position.y, wallBottom.position.y);
 
-		Instantiate (foodPrefab,
+		GameObject g = Instantiate (foodPrefab,
 			new Vector2 (x, y),
 			Quaternion.identity);
+
 	}
 
 	// Use this for initialization
 	void Start () {
 		// Spawn food every four seconds
-		InvokeRepeating ("Spawn", 3, 4);
+		InvokeRepeating ("Spawn", 2, 2);
+	}
+
+	void Update() {
+		if (Snake.lose) {
+			foreach (GameObject item in GameObject.FindGameObjectsWithTag("food")) {
+				Destroy (item);
+			}
+		}
 	}
 
 }
